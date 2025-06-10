@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simple Text Editor</title>
+<style>
+  body {
+    margin: 0; 
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  #toolbar {
+    background: #f0f0f0;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #ccc;
+  }
+  #toolbar button, #toolbar select, #toolbar input[type=color] {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 5px 8px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 3px;
+  }
+  #toolbar button:hover, #toolbar select:hover, #toolbar input[type=color]:hover {
+    background: #ddd;
+  }
+  #editor {
+    flex-grow: 1;
+    padding: 16px;
+    outline: none;
+    overflow-y: auto;
+    border: none;
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <button type="button" onclick="execCmd('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+  <button type="button" onclick="execCmd('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+  <button type="button" onclick="execCmd('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
+
+  <select onchange="execCmd('fontSize', this.value)" title="Font Size">
+    <option value="">Font Size</option>
+    <option value="1">8pt</option>
+    <option value="2">10pt</option>
+    <option value="3">12pt</option>
+    <option value="4">14pt</option>
+    <option value="5">18pt</option>
+    <option value="6">24pt</option>
+    <option value="7">36pt</option>
+  </select>
+
+  <input type="color" onchange="execCmd('foreColor', this.value)" title="Font Color" />
+
+  <button type="button" onclick="execCmd('justifyLeft')" title="Align Left">⬅</button>
+  <button type="button" onclick="execCmd('justifyCenter')" title="Align Center">⬌</button>
+  <button type="button" onclick="execCmd('justifyRight')" title="Align Right">➡</button>
+  <button type="button" onclick="execCmd('justifyFull')" title="Justify">⮀</button>
+
+  <button type="button" onclick="execCmd('undo')" title="Undo (Ctrl+Z)">↺</button>
+  <button type="button" onclick="execCmd('redo')" title="Redo (Ctrl+Y)">↻</button>
+</div>
+
+<div id="editor" contenteditable="true" spellcheck="true" aria-label="Document editor">
+  Start typing your document here...
+</div>
+
+<script>
+  function execCmd(command, value = null) {
+    document.execCommand(command, false, value);
+    // Reset selects after command (like fontSize)
+    if (command === 'fontSize') {
+      document.querySelector('select').value = "";
+    }
+  }
+
+  // Optional: Add keyboard shortcuts for formatting
+  document.getElementById('editor').addEventListener('keydown', e => {
+    if (e.ctrlKey) {
+      if (e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        execCmd('bold');
+      } else if (e.key.toLowerCase() === 'i') {
+        e.preventDefault();
+        execCmd('italic');
+      } else if (e.key.toLowerCase() === 'u') {
+        e.preventDefault();
+        execCmd('underline');
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
