@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aura Farm - 3D Clicker</title>
+<style>
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #e0f7fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    user-select: none;
+  }
+  h1 {
+    margin-bottom: 0.2em;
+    font-weight: 900;
+    text-shadow: 0 0 8px #26c6da;
+  }
+  #auraCount {
+    font-size: 1.5em;
+    margin-bottom: 2em;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 6px #80deea;
+  }
+  #clickerBtn {
+    background: linear-gradient(145deg, #26c6da, #00acc1);
+    border: none;
+    border-radius: 20px;
+    width: 180px;
+    height: 180px;
+    box-shadow:
+      inset 5px 5px 15px #0097a7,
+      inset -5px -5px 15px #4dd0e1,
+      5px 5px 15px rgba(0,0,0,0.4);
+    cursor: pointer;
+    outline: none;
+    font-size: 2em;
+    font-weight: 700;
+    color: #e0f7fa;
+    text-shadow: 0 0 6px #00acc1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 800px;
+    transition: box-shadow 0.2s ease;
+    user-select: none;
+  }
+  #clickerBtn:active {
+    box-shadow:
+      inset -5px -5px 15px #0097a7,
+      inset 5px 5px 15px #4dd0e1,
+      2px 2px 6px rgba(0,0,0,0.6);
+    transform: translateY(4px);
+  }
+  #multiplierSection {
+    margin-top: 3em;
+    text-align: center;
+  }
+  #multiplierBtn {
+    background: linear-gradient(145deg, #81d4fa, #0288d1);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #e1f5fe;
+    cursor: pointer;
+    box-shadow:
+      4px 4px 10px #01579b,
+      inset 1px 1px 5px #4fc3f7;
+    transition: background 0.3s ease;
+    user-select: none;
+  }
+  #multiplierBtn:disabled {
+    background: #37474f;
+    box-shadow: none;
+    cursor: not-allowed;
+    color: #90a4ae;
+  }
+  #multiplierBtn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #4fc3f7, #0277bd);
+  }
+  #multiplierInfo {
+    margin-top: 0.5em;
+    font-size: 1.1em;
+    text-shadow: 0 0 5px #0288d1;
+  }
+</style>
+</head>
+<body>
+
+<h1>Aura Farm</h1>
+<div id="auraCount">Aura: 0</div>
+<button id="clickerBtn" aria-label="Click to gain aura">✨ Click Me ✨</button>
+
+<div id="multiplierSection">
+  <button id="multiplierBtn" disabled>Buy Multiplier (Cost: 50 Aura)</button>
+  <div id="multiplierInfo">Current multiplier: x1</div>
+</div>
+
+<script>
+(() => {
+  const auraCountEl = document.getElementById('auraCount');
+  const clickerBtn = document.getElementById('clickerBtn');
+  const multiplierBtn = document.getElementById('multiplierBtn');
+  const multiplierInfo = document.getElementById('multiplierInfo');
+
+  let aura = 0;
+  let multiplier = 1;
+  let multiplierCost = 50;
+
+  // Update the aura display
+  function updateAuraDisplay() {
+    auraCountEl.textContent = `Aura: ${aura.toLocaleString()}`;
+  }
+
+  // Update multiplier display and button state
+  function updateMultiplierUI() {
+    multiplierInfo.textContent = `Current multiplier: x${multiplier}`;
+    multiplierBtn.textContent = `Buy Multiplier (Cost: ${multiplierCost.toLocaleString()} Aura)`;
+    multiplierBtn.disabled = aura < multiplierCost;
+  }
+
+  // Clicking the main button
+  clickerBtn.addEventListener('click', () => {
+    aura += multiplier;
+    updateAuraDisplay();
+    updateMultiplierUI();
+    animateClick();
+  });
+
+  // Buying multiplier
+  multiplierBtn.addEventListener('click', () => {
+    if (aura >= multiplierCost) {
+      aura -= multiplierCost;
+      multiplier += 1;
+      multiplierCost = Math.floor(multiplierCost * 1.8);
+      updateAuraDisplay();
+      updateMultiplierUI();
+      animateMultiplierBuy();
+    }
+  });
+
+  // Simple click animation for the button
+  function animateClick() {
+    clickerBtn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      clickerBtn.style.transform = 'scale(1)';
+    }, 100);
+  }
+
+  // Flash multiplier button on purchase
+  function animateMultiplierBuy() {
+    multiplierBtn.style.background = 'linear-gradient(145deg, #ffd54f, #ffb300)';
+    multiplierBtn.style.boxShadow = '0 0 12px #ffa000, inset 0 0 8px #ffca28';
+    setTimeout(() => {
+      multiplierBtn.style.background = '';
+      multiplierBtn.style.boxShadow = '';
+      updateMultiplierUI();
+    }, 300);
+  }
+
+  // Initial UI update
+  updateAuraDisplay();
+  updateMultiplierUI();
+})();
+</script>
+
+</body>
+</html>
